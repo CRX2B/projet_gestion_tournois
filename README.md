@@ -28,7 +28,7 @@ Ce programme permet de :
    Linux/Mac
      `source env/bin/activate`
 
-4. Installez les dépendences :
+4. Installez les dépendances :
 
    pip install -r requirements.txt
 
