@@ -15,18 +15,18 @@ Ce programme permet de :
 
 1. Clonez le dépôt :
 
-   git clone [url_du_depot]
+   `git clone [url_du_depot]`
 
 2. Créez un environnement virtuel Python :
 
-   python -m venv env
+   `python -m venv env`
 
 3. Activez l'environnement virtuel :
 
    Windows
-     env\Scripts\activate
+     `env\Scripts\activate`
    Linux/Mac
-     source env/bin/activate
+     `source env/bin/activate`
 
 4. Installez les dépendences :
 
@@ -36,7 +36,7 @@ Ce programme permet de :
 
 1. Lancez le programme :
 
-   python main.py
+   `python main.py`
 
 2. Menu Principal :
    - Nouveau tournoi : Créer un nouveau tournoi
