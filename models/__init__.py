@@ -1,4 +1,4 @@
-from .player import Joueur
+from .joueur import Joueur
 from .match import Match
-from .round import Round
 from .tournoi import Tournoi
+from .round import Round

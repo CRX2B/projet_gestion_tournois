@@ -11,12 +11,12 @@ class Tournoi:
         self.nb_tours = nb_tours
         self.liste_joueurs = liste_joueurs
         self.description = description
+        self.rounds = []
         
     def __str__(self):
         return f"{self.nom} {self.lieu} {self.date_debut} {self.date_fin} {self.nb_tours} {self.liste_joueurs} {self.description}"
         
     def to_dict(self):
-        """Convertit l'objet en dictionnaire"""
         return {
             "nom": self.nom,
             "lieu": self.lieu,
@@ -24,7 +24,8 @@ class Tournoi:
             "date_fin": self.date_fin,
             "nb_tours": self.nb_tours,
             "liste_joueurs": [joueur.to_dict() for joueur in self.liste_joueurs],
-            "description": self.description 
+            "description": self.description,
+            "rounds": [round.to_dict() for round in self.rounds]
         }
     
     def sauvegarder(self):
