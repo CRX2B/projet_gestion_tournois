@@ -1,2 +1,2 @@
-from .view import Interface
 from .rapport import Rapport
+from .view import Interface

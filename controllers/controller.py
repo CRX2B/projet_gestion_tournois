@@ -1,12 +1,15 @@
 import json
 import os
 
+from models import Joueur, Match, Round, Tournoi
 from views import Interface
-from models import Tournoi, Joueur, Match, Round
-from .tournoi_controller import Tournoi_Controller
+
+from .tournoi_controller import TournoiController
 
 
 class Controller:
+    """Contrôleur principal de l'application gérant les interactions entre les modèles et les vues."""
+
     def __init__(self):
         self.interface = Interface(self)
         self.tournoi = None
@@ -16,37 +19,35 @@ class Controller:
         self.tournoi_controller = None
         self.tournois = []
         self.charger_donnees()
-        
+
     def charger_donnees(self):
-        """Charge les données existantes au démarrage"""
-        # Charger les tournois
+        """Charge les données existantes (tournois et joueurs) au démarrage de l'application."""
+
         tournois_data = self.charger_tournois()
         self.tournois = tournois_data
-        
-        # Charger les joueurs
+
         joueurs_data = self.charger_joueurs()
         self.joueurs = joueurs_data
-        
+
     def charger_tournois(self):
+        """Charge tous les tournois sauvegardés depuis les fichiers JSON."""
         tournois = []
         if os.path.exists("data/tournaments"):
             for filename in os.listdir("data/tournaments"):
                 if filename.endswith(".json"):
                     with open(f"data/tournaments/{filename}", "r") as f:
-                        try:
+                        try:  # Convertit les données JSON en un dictionnaire Python
                             data = json.load(f)
                             liste_joueurs = []
                             joueurs_dict = {}
-                            
+                            # Parcourt la liste des joueurs du tournoi
                             for joueur_data in data.get("liste_joueurs", []):
                                 joueur = Joueur(
-                                    joueur_data["nom"],
-                                    joueur_data["prenom"],
-                                    joueur_data["date_naissance"]
+                                    joueur_data["nom"], joueur_data["prenom"], joueur_data["date_naissance"]
                                 )
                                 liste_joueurs.append(joueur)
                                 joueurs_dict[f"{joueur.nom}_{joueur.prenom}"] = joueur
-                                
+                            # Crée un objet Tournoi avec les données du fichier JSON
                             tournoi = Tournoi(
                                 data["nom"],
                                 data["lieu"],
@@ -54,69 +55,71 @@ class Controller:
                                 data["date_fin"],
                                 data["nb_tours"],
                                 liste_joueurs,
-                                data["description"]
+                                data["description"],
                             )
-                            
+                            # Parcourt la liste des rounds du tournoi
                             if "rounds" in data:
                                 for round_data in data["rounds"]:
                                     round = Round(round_data["nom"])
                                     round.date_debut = round_data["date_debut"]
                                     round.date_fin = round_data["date_fin"]
-                                    
+                                    # Parcourt la liste des matchs du round
                                     for match_data in round_data["matchs"]:
                                         try:
                                             joueur1_data = match_data["joueur1"]
                                             joueur2_data = match_data["joueur2"]
                                             joueur1 = joueurs_dict[f"{joueur1_data['nom']}_{joueur1_data['prenom']}"]
                                             joueur2 = joueurs_dict[f"{joueur2_data['nom']}_{joueur2_data['prenom']}"]
-                                            
+                                            # Crée un objet Match avec les données du fichier JSON
                                             match = Match(
                                                 joueur1,
                                                 joueur2,
                                                 match_data.get("score_joueur1", 0),
-                                                match_data.get("score_joueur2", 0)
+                                                match_data.get("score_joueur2", 0),
                                             )
                                             round.matchs.append(match)
-                                        except (KeyError, TypeError) as e:
+                                        except (KeyError, TypeError) as e:  # Gère les erreurs de conversion en entier
                                             print(f"Erreur lors du chargement d'un match: {e}")
                                             continue
-                                        
+
                                     tournoi.rounds.append(round)
-                                    
+
                             tournois.append(tournoi)
                         except json.JSONDecodeError as e:
                             print(f"Erreur lors du chargement du fichier {filename}: {e}")
-                            continue
+                            continue  # Passe au tournoi suivant si une erreur est détectée
         return tournois
-    
+
     def charger_joueurs(self):
+        """Charge tous les joueurs sauvegardés depuis les fichiers JSON."""
+
         joueurs = []
         if os.path.exists("data/joueurs.json"):
             with open("data/joueurs.json", "r") as f:
                 try:
                     joueurs_data = json.load(f)
                     for joueur_data in joueurs_data:
-                        joueur = Joueur(
-                            joueur_data["nom"],
-                            joueur_data["prenom"],
-                            joueur_data["date_naissance"]
-                        )
+                        joueur = Joueur(joueur_data["nom"], joueur_data["prenom"], joueur_data["date_naissance"])
                         joueurs.append(joueur)
                 except json.JSONDecodeError:
-                    pass
+                    pass  # Passe au joueur suivant si une erreur est détectée
         return joueurs
-    
+
     def demarrer(self):
+        """Lance l'interface principale de l'application."""
         self.interface.menu_principal()
-        
+
     def nouveau_tournoi(self, nom, lieu, date_debut, date_fin, nb_tours, description):
+        """Crée et initialise un nouveau tournoi."""
+
         self.tournoi = Tournoi(nom, lieu, date_debut, date_fin, nb_tours, [], description)
         self.tournois.append(self.tournoi)
-        self.tournoi_controller = Tournoi_Controller(self.tournoi)
+        self.tournoi_controller = TournoiController(self.tournoi)
         self.tournoi.sauvegarder()
         return self.tournoi
-    
+
     def nouveau_joueur(self, nom, prenom, date_naissance):
+        """Crée et initialise un nouveau joueur."""
         joueur = Joueur(nom, prenom, date_naissance)
         self.joueurs.append(joueur)
         if self.tournoi:
@@ -124,41 +127,42 @@ class Controller:
             self.tournoi.sauvegarder()
         joueur.sauvegarder()
         return joueur
-        
-    
+
     def sauvegarder_tournoi(self):
+        """Sauvegarde le tournoi actuel."""
         self.tournoi.sauvegarder()
-        
+
     def sauvegarder_joueur(self):
+        """Sauvegarde tous les joueurs."""
         for joueur in self.joueurs:
             joueur.sauvegarder()
-            
+
     def charger_tournoi(self, nom):
+        """Charge un tournoi spécifique."""
         with open(f"data/tournaments/{nom}.json", "r") as f:
             data = json.load(f)
-            return Tournoi(**data)
-        
+            return Tournoi(**data)  # Désérialise les données et retourne un objet Tournoi
+
     def charger_joueur(self, nom):
-        with open(f"data/joueurs.json", "r") as f:
+        """Charge un joueur spécifique."""
+        with open("data/joueurs.json", "r") as f:
             data = json.load(f)
-            return Joueur(**data)  
+            return Joueur(**data)  # Désérialise les données et retourne un objet Joueur
 
     def get_tournois(self):
-        """Récupère la liste des tournois depuis le modèle"""
+        """Retourne tous les tournois."""
         return self.tournois
-    
+
     def get_joueurs(self):
-        """Récupère la liste des joueurs depuis le modèle"""
+        """Retourne tous les joueurs."""
         return self.joueurs
 
     def selectionner_tournoi(self, tournoi):
-        """Sélectionne un tournoi et initialise son controller"""
+        """Sélectionne un tournoi et initialise son controller."""
         self.tournoi = tournoi
-        self.tournoi_controller = Tournoi_Controller(self.tournoi)
-        
+        self.tournoi_controller = TournoiController(self.tournoi)
+        # Si le tournoi a des joueurs, ajoute les joueurs pas encore enregistrés
         if tournoi.liste_joueurs:
             for joueur in tournoi.liste_joueurs:
                 if joueur not in self.joueurs:
                     self.joueurs.append(joueur)
-
-

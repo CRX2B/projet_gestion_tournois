@@ -1,9 +1,12 @@
 import json
-from datetime import datetime
 import os
 
+
 class Tournoi:
+    """Gère un tournoi d'échecs et ses données."""
+
     def __init__(self, nom, lieu, date_debut, date_fin, nb_tours, liste_joueurs, description):
+        """Initialise un nouveau tournoi."""
         self.nom = nom
         self.lieu = lieu
         self.date_debut = date_debut
@@ -12,11 +15,20 @@ class Tournoi:
         self.liste_joueurs = liste_joueurs
         self.description = description
         self.rounds = []
-        
+
     def __str__(self):
-        return f"{self.nom} {self.lieu} {self.date_debut} {self.date_fin} {self.nb_tours} {self.liste_joueurs} {self.description}"
-        
+        """Retourne la représentation textuelle du tournoi."""
+        return (
+            f"Tournoi: {self.nom}\n"
+            f"Lieu: {self.lieu}\n"
+            f"Dates: {self.date_debut} - {self.date_fin}\n"
+            f"Tours: {self.nb_tours}\n"
+            f"Joueurs: {self.liste_joueurs}\n"
+            f"Description: {self.description}"
+        )
+
     def to_dict(self):
+        """Convertit le tournoi en dictionnaire pour la sauvegarde."""
         return {
             "nom": self.nom,
             "lieu": self.lieu,
@@ -25,18 +37,18 @@ class Tournoi:
             "nb_tours": self.nb_tours,
             "liste_joueurs": [joueur.to_dict() for joueur in self.liste_joueurs],
             "description": self.description,
-            "rounds": [round.to_dict() for round in self.rounds]
+            "rounds": [round.to_dict() for round in self.rounds],
         }
-    
+
     def sauvegarder(self):
+        """Sauvegarde le tournoi en JSON."""
         if not os.path.exists("data"):
             os.makedirs("data")
         if not os.path.exists("data/tournaments"):
             os.makedirs("data/tournaments")
-            
+
         fichier = f"data/tournaments/{self.nom}.json"
         donnees = self.to_dict()
-        
+
         with open(fichier, "w") as f:
             json.dump(donnees, f, indent=4)
-                    
