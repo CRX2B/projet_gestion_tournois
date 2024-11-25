@@ -15,11 +15,11 @@ class Joueur:
         return f"{self.nom} {self.prenom} {self.score}"
 
     def to_dict(self):
-        """Convertit le joueur en dictionnaire."""
+        """Convertit le joueur en dictionnaire pour la sérialisation JSON."""
         return {"nom": self.nom, "prenom": self.prenom, "date_naissance": self.date_naissance, "score": self.score}
 
     def sauvegarder(self):
-        """Sauvegarde les données du joueur dans un fichier JSON."""
+        """Sauvegarde ou met à jour les données du joueur dans le fichier JSON."""
         if not os.path.exists("data"):
             os.makedirs("data")
 

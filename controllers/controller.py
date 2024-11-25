@@ -21,7 +21,7 @@ class Controller:
         self.charger_donnees()
 
     def charger_donnees(self):
-        """Charge les données existantes (tournois et joueurs) au démarrage de l'application."""
+        """Charge les données existantes des tournois et joueurs au démarrage."""
 
         tournois_data = self.charger_tournois()
         self.tournois = tournois_data
@@ -30,7 +30,7 @@ class Controller:
         self.joueurs = joueurs_data
 
     def charger_tournois(self):
-        """Charge tous les tournois sauvegardés depuis les fichiers JSON."""
+        """Charge les tournois depuis les fichiers JSON et retourne une liste d'objets Tournoi."""
         tournois = []
         if os.path.exists("data/tournaments"):
             for filename in os.listdir("data/tournaments"):
@@ -91,7 +91,7 @@ class Controller:
         return tournois
 
     def charger_joueurs(self):
-        """Charge tous les joueurs sauvegardés depuis les fichiers JSON."""
+        """Charge les joueurs depuis le fichier JSON et retourne une liste d'objets Joueur."""
 
         joueurs = []
         if os.path.exists("data/joueurs.json"):
@@ -110,7 +110,16 @@ class Controller:
         self.interface.menu_principal()
 
     def nouveau_tournoi(self, nom, lieu, date_debut, date_fin, nb_tours, description):
-        """Crée et initialise un nouveau tournoi."""
+        """Crée un nouveau tournoi et l'ajoute à la liste des tournois.
+
+        Args:
+            nom (str): Nom du tournoi
+            lieu (str): Lieu du tournoi
+            date_debut (str): Date de début
+            date_fin (str): Date de fin
+            nb_tours (int): Nombre de tours
+            description (str): Description du tournoi
+        """
 
         self.tournoi = Tournoi(nom, lieu, date_debut, date_fin, nb_tours, [], description)
         self.tournois.append(self.tournoi)
@@ -119,7 +128,13 @@ class Controller:
         return self.tournoi
 
     def nouveau_joueur(self, nom, prenom, date_naissance):
-        """Crée et initialise un nouveau joueur."""
+        """Crée un nouveau joueur et l'ajoute au tournoi actuel s'il existe.
+
+        Args:
+            nom (str): Nom du joueur
+            prenom (str): Prénom du joueur
+            date_naissance (str): Date de naissance
+        """
         joueur = Joueur(nom, prenom, date_naissance)
         self.joueurs.append(joueur)
         if self.tournoi:

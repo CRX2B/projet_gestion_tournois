@@ -10,7 +10,11 @@ class TournoiController:
         self.tournoi = tournoi
 
     def lancer_round(self):
-        """Lance un nouveau round du tournoi."""
+        """Lance un nouveau round du tournoi et génère les matchs.
+
+        Returns:
+            Round: Le nouveau round créé
+        """
 
         round_num = len(self.tournoi.rounds) + 1
         nouveau_round = Round(f"Round {round_num}")
@@ -25,7 +29,12 @@ class TournoiController:
         return nouveau_round
 
     def cloturer_round(self, round_actuel, resultats):
-        """Clôture un round en enregistrant les résultats."""
+        """Clôture un round en enregistrant les résultats des matchs.
+
+        Args:
+            round_actuel (Round): Round à clôturer
+            resultats (list): Liste des résultats des matchs
+        """
 
         for match, resultat in zip(
             round_actuel.matchs, resultats
@@ -38,16 +47,55 @@ class TournoiController:
         self.tournoi.sauvegarder()
 
     def generer_paires(self, joueurs):
-        """Génère les paires de joueurs pour les matchs."""
+        """Génère les paires de joueurs selon le système suisse.
 
-        # Mélange aléatoire des joueurs pour créer des paires aléatoires
-        random.shuffle(joueurs)
+        Args:
+            joueurs (list): Liste des joueurs
+        Returns:
+            list: Liste des matchs générés
+        """
+
+        round_actuel = len(self.tournoi.rounds) + 1
         matchs = []
-        # Parcourt la liste par pas de 2 pour créer les paires
-        for i in range(0, len(joueurs), 2):
-            if i + 1 < len(joueurs):
-                joueur1 = joueurs[i]
-                joueur2 = joueurs[i + 1]
-                match = Match(joueur1, joueur2)
-                matchs.append(match)
+
+        if round_actuel == 1:
+            # Premier tour : appariement aléatoire
+            random.shuffle(joueurs)
+            for i in range(0, len(joueurs), 2):
+                if i + 1 < len(joueurs):
+                    match = Match(joueurs[i], joueurs[i + 1])
+                    matchs.append(match)
+        else:
+            # Tours suivants : appariement selon les scores
+            joueurs_tries = sorted(joueurs, key=lambda x: x.score, reverse=True)
+            while joueurs_tries:
+                joueur1 = joueurs_tries.pop(0)
+                joueur2 = None
+
+                # Recherche d'un adversaire qui n'a pas déjà joué contre joueur1
+                for joueur in joueurs_tries:
+                    if not self._ont_deja_joue(joueur1, joueur):
+                        joueur2 = joueur
+                        break
+
+                if joueur2:
+                    joueurs_tries.remove(joueur2)
+                    match = Match(joueur1, joueur2)
+                    matchs.append(match)
+                else:
+                    # Si aucun adversaire valide n'est trouvé, on prend le premier disponible
+                    joueur2 = joueurs_tries.pop(0)
+                    match = Match(joueur1, joueur2)
+                    matchs.append(match)
+
         return matchs
+
+    def _ont_deja_joue(self, joueur1, joueur2):
+        """Vérifie si deux joueurs ont déjà joué ensemble dans ce tournoi."""
+        for round in self.tournoi.rounds:
+            for match in round.matchs:
+                if (match.joueur1 == joueur1 and match.joueur2 == joueur2) or (
+                    match.joueur1 == joueur2 and match.joueur2 == joueur1
+                ):
+                    return True
+        return False

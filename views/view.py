@@ -12,7 +12,7 @@ class Interface:
         print(message)
 
     def menu_principal(self):
-        """Affiche et gère le menu principal de l'application."""
+        """Affiche le menu principal et gère les choix de l'utilisateur."""
         self.afficher_message("\nMenu Principal")
         self.afficher_message("1. Nouveau tournoi")
         self.afficher_message("2. Charger tournoi")
@@ -37,7 +37,7 @@ class Interface:
             return self.menu_principal()
 
     def menu_nouveau_tournoi(self):
-        """Affiche et gère le menu de création d'un nouveau tournoi."""
+        """Gère la création d'un nouveau tournoi et l'ajout de joueurs."""
         self.afficher_message("\nNouveau Tournoi")
         self.afficher_message("1. Créer un tournoi")
         self.afficher_message("2. Ajouter des joueurs")
@@ -50,15 +50,15 @@ class Interface:
             self.prompt_creer_tournoi()
         elif choix == "2":
             if self.controller.tournoi is None:
-                print("Veuillez créer un tournoi avant d'ajouter un joueur.")
+                self.afficher_message("Veuillez créer un tournoi avant d'ajouter un joueur.")
                 return self.menu_nouveau_tournoi()
             self.prompt_nouveau_joueur()
         elif choix == "3":
             if self.controller.tournoi is None:
-                print("Veuillez créer un tournoi avant de commencer.")
+                self.afficher_message("Veuillez créer un tournoi avant de commencer.")
                 return self.menu_nouveau_tournoi()
             if len(self.controller.tournoi.liste_joueurs) < 2:
-                print("Il faut au moins 2 joueurs pour commencer un tournoi.")
+                self.afficher_message("Il faut au moins 2 joueurs pour commencer un tournoi.")
                 return self.menu_nouveau_tournoi()
             self.gestion_round()
         elif choix == "4":
@@ -71,13 +71,13 @@ class Interface:
         """Affiche et gère le menu de chargement d'un tournoi."""
         tournois = self.controller.get_tournois()
         if not tournois:
-            print("\nAucun tournoi enregistré.")
+            self.afficher_message("\nAucun tournoi enregistré.")
             return self.menu_principal()
 
-        print("\nTournois disponibles :")
+        self.afficher_message("\nTournois disponibles :")
         for i, tournoi in enumerate(tournois, 1):
-            print(f"{i}. {tournoi.nom} ({tournoi.lieu})")
-        print(f"{len(tournois) + 1}. Retour au menu principal")
+            self.afficher_message(f"{i}. {tournoi.nom} ({tournoi.lieu})")
+        self.afficher_message(f"{len(tournois) + 1}. Retour au menu principal")
 
         choix = input("\nSélectionnez un tournoi : ")
         try:
@@ -95,12 +95,12 @@ class Interface:
 
     def menu_gestion_tournoi(self):
         """Menu de gestion d'un tournoi chargé"""
-        print("\nGestion du tournoi")
-        print(f"Tournoi : {self.controller.tournoi.nom}")
-        print("1. Voir les détails")
-        print("2. Ajouter des joueurs")
-        print("3. Commencer/Continuer le tournoi")
-        print("4. Retour au menu principal")
+        self.afficher_message("\nGestion du tournoi")
+        self.afficher_message(f"Tournoi : {self.controller.tournoi.nom}")
+        self.afficher_message("1. Voir les détails")
+        self.afficher_message("2. Ajouter des joueurs")
+        self.afficher_message("3. Commencer/Continuer le tournoi")
+        self.afficher_message("4. Retour au menu principal")
 
         choix = input("\nEntrez votre choix : ")
 
@@ -211,16 +211,19 @@ class Interface:
             print(f"{match.joueur1.nom} {match.joueur1.prenom} vs {match.joueur2.nom} {match.joueur2.prenom}")
 
     def prompt_resultat_match(self, match):
-        """Prompt pour entrer le résultat d'un match."""
+        """Demande le résultat d'un match.
+
+        Args:
+            match (Match): Match dont on veut le résultat
+        Returns:
+            str: '1' pour victoire joueur1, '2' pour victoire joueur2, '0' pour match nul
+        """
         print(f"Match : {match.joueur1.nom} {match.joueur1.prenom} vs {match.joueur2.nom} {match.joueur2.prenom}")
         resultat = input("Résultat (1=joueur1 gagne, 2=joueur2 gagne, 0=match nul) : ")
         return resultat
 
     def gestion_round(self):
-        """Gère le déroulement d'un round du tournoi.
-
-        Affiche les matchs, collecte les résultats et met à jour les scores.
-        """
+        """Gère le déroulement d'un round : affichage des matchs et saisie des résultats."""
         if not self.controller.tournoi_controller:
             print("Erreur: Pas de tournoi sélectionné")
             return self.menu_principal()

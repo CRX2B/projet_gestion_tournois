@@ -14,11 +14,11 @@ class Round:
         return f"{self.nom} {self.date_debut} {self.date_fin}"
 
     def commencer_round(self):
-        """Démarre le round en enregistrant la date et l'heure de début."""
+        """Enregistre la date et l'heure de début du round."""
         self.date_debut = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
 
     def terminer_round(self):
-        """Termine le round en enregistrant la date et l'heure de fin."""
+        """Enregistre la date et l'heure de fin du round."""
         self.date_fin = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
 
     def to_dict(self):

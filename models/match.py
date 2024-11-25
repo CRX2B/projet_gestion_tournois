@@ -13,7 +13,13 @@ class Match:
         return f"{joueur1} vs {joueur2}"
 
     def resultat_match(self, resultat):
-        """Enregistre le résultat (1=victoire j1, 2=victoire j2, 0=nul)."""
+        """Enregistre le résultat du match et met à jour les scores des joueurs.
+
+        Args:
+            resultat (str): '1' pour victoire joueur1, '2' pour victoire joueur2, '0' pour match nul
+        """
+        if resultat not in ["0", "1", "2"]:
+            raise ValueError("Résultat invalide")
         if resultat == "1":
             self.joueur1.score += 1
             self.score_joueur1 = 1
@@ -29,7 +35,7 @@ class Match:
             self.score_joueur2 = 0.5
 
     def to_dict(self):
-        """Convertit le match en dictionnaire pour la sauvegarde."""
+        """Convertit le match en dictionnaire pour la sérialisation JSON."""
         return {
             "joueur1": self.joueur1.to_dict(),
             "joueur2": self.joueur2.to_dict(),

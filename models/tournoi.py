@@ -28,7 +28,7 @@ class Tournoi:
         )
 
     def to_dict(self):
-        """Convertit le tournoi en dictionnaire pour la sauvegarde."""
+        """Convertit le tournoi en dictionnaire pour la sérialisation JSON."""
         return {
             "nom": self.nom,
             "lieu": self.lieu,
@@ -41,7 +41,7 @@ class Tournoi:
         }
 
     def sauvegarder(self):
-        """Sauvegarde le tournoi en JSON."""
+        """Sauvegarde les données du tournoi dans un fichier JSON."""
         if not os.path.exists("data"):
             os.makedirs("data")
         if not os.path.exists("data/tournaments"):
