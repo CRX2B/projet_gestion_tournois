@@ -30,7 +30,7 @@ class Rapport:
             return self.menu_rapports()
 
     def rapport_joueurs(self):
-        """Affiche la liste des joueurs triée par ordre alphabétique."""
+        """Affiche la liste des joueurs triée par ordre alphabétique avec leur date de naissance."""
 
         joueurs = self.controller.get_joueurs()
         if not joueurs:
@@ -40,7 +40,9 @@ class Rapport:
         self.afficher_message("\nListe des joueurs par ordre alphabétique :")
         joueurs_tries = sorted(joueurs, key=lambda x: (x.nom, x.prenom))
         for joueur in joueurs_tries:
-            self.afficher_message(f"- {joueur.nom} {joueur.prenom}")
+            self.afficher_message(
+                f"- {joueur.nom} {joueur.prenom} (né(e) le {joueur.date_naissance})"
+            )
 
         return self.menu_rapports()
 

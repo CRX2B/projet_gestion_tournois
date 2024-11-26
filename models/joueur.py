@@ -39,7 +39,7 @@ class Joueur:
         joueur_existant = next(
             (j for j in joueurs_existants if j["nom"] == self.nom and j["prenom"] == self.prenom), None
         )
-        # Met à jour ou ajoute le joueur selon qu'il existe ou non
+        # Met à jour ou ajoute le joueur selon s'il existe ou non
         if joueur_existant:
             index = joueurs_existants.index(joueur_existant)
             joueurs_existants[index] = donnees
