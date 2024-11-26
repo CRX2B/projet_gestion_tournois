@@ -88,7 +88,9 @@ Ici :
 flake8 : est l'outil que nous appellons
 
 --format=html : stipule le format du rapport que nous désirons.
+
 --htmldir=reports/flake8-html : indique le dossier où nous voulons enregistrer notre rapport avec Flake8.
+
 Vous n'avez plus qu'à regarder votre nouveau rapport dans le : flake8_rapport/flake8-html !
 
 ## Développé avec
