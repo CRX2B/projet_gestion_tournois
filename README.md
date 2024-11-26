@@ -77,6 +77,20 @@ Les données sont sauvegardées en JSON dans le dossier `data/` :
 - `tournaments/` : Données des tournois
 - `joueurs.json` : Base de données des joueurs
 
+## Générer un rapport avec Flake8-HTML
+Un fichier de configuration a été join au répository pour éviter de vérifier certains dossiers type environnement virtuel et dossiers __pycache__ .
+Afin de générer un rapport avec Flake8-html, vous pouvez rentrer et valider cette ligne de code dans votre Terminal en vous assurant d'être dans le dossier source du programme :
+
+flake8 --format=html --htmldir=reports/flake8-html
+
+Ici :
+
+flake8 : est l'outil que nous appellons
+
+--format=html : stipule le format du rapport que nous désirons.
+--htmldir=reports/flake8-html : indique le dossier où nous voulons enregistrer notre rapport avec Flake8.
+Vous n'avez plus qu'à regarder votre nouveau rapport dans le : flake8_rapport/flake8-html !
+
 ## Développé avec
 
 - Python 3.12.4
