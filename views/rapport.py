@@ -40,9 +40,7 @@ class Rapport:
         self.afficher_message("\nListe des joueurs par ordre alphabétique :")
         joueurs_tries = sorted(joueurs, key=lambda x: (x.nom, x.prenom))
         for joueur in joueurs_tries:
-            self.afficher_message(
-                f"- {joueur.nom} {joueur.prenom} (né(e) le {joueur.date_naissance})"
-            )
+            self.afficher_message(f"- {joueur.nom} {joueur.prenom} (né(e) le {joueur.date_naissance})")
 
         return self.menu_rapports()
 

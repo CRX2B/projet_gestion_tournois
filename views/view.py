@@ -214,7 +214,8 @@ class Interface:
         print("Matchs générés :")
         for match in round_actuel.matchs:
             self.afficher_message(
-                f"{match.joueur1.nom} {match.joueur1.prenom} vs {match.joueur2.nom} {match.joueur2.prenom}")
+                f"{match.joueur1.nom} {match.joueur1.prenom} vs {match.joueur2.nom} {match.joueur2.prenom}"
+            )
 
         resultats = []
         print("\nEntrez les résultats des matchs :")
@@ -246,7 +247,8 @@ class Interface:
         self.afficher_message(f"Matchs du round {matchs.nom} :")
         for match in matchs.matchs:
             self.afficher_message(
-                f"{match.joueur1.nom} {match.joueur1.prenom} vs {match.joueur2.nom} {match.joueur2.prenom}")
+                f"{match.joueur1.nom} {match.joueur1.prenom} vs {match.joueur2.nom} {match.joueur2.prenom}"
+            )
 
     def prompt_resultat_match(self, match):
         """Demande et valide le résultat d'un match.
@@ -258,7 +260,8 @@ class Interface:
             str: '1' pour victoire joueur1, '2' pour victoire joueur2, '0' pour match nul
         """
         self.afficher_message(
-            f"Match : {match.joueur1.nom} {match.joueur1.prenom} vs {match.joueur2.nom} {match.joueur2.prenom}")
+            f"Match : {match.joueur1.nom} {match.joueur1.prenom} vs {match.joueur2.nom} {match.joueur2.prenom}"
+        )
         resultat = input("Résultat (1=joueur1 gagne, 2=joueur2 gagne, 0=match nul) : ")
         return resultat
 

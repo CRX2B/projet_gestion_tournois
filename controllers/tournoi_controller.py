@@ -10,23 +10,32 @@ class TournoiController:
         self.tournoi = tournoi
 
     def lancer_round(self):
-        """Lance un nouveau round du tournoi et génère les matchs.
+        """Lance un nouveau round ou vérifie si un round existe deja et génère les matchs.
 
         Returns:
             Round: Le nouveau round créé
         """
 
         round_num = len(self.tournoi.rounds) + 1
-        nouveau_round = Round(f"Round {round_num}")
-        nouveau_round.commencer_round()
-        # Récupère la liste des joueurs du tournoi
-        joueurs = self.tournoi.liste_joueurs
-        nouveau_round.matchs = self.generer_paires(joueurs)
+        round_en_cours = None
+        for round in self.tournoi.rounds:
+            if round.date_fin is None:
+                round_en_cours = round
+                break
 
-        self.tournoi.rounds.append(nouveau_round)
-        self.tournoi.sauvegarder()
+        if not round_en_cours:
+            nouveau_round = Round(f"Round {round_num}")
+            nouveau_round.commencer_round()
+            # Récupère la liste des joueurs du tournoi
+            joueurs = self.tournoi.liste_joueurs
+            nouveau_round.matchs = self.generer_paires(joueurs)
 
-        return nouveau_round
+            self.tournoi.rounds.append(nouveau_round)
+            self.tournoi.sauvegarder()
+
+            return nouveau_round
+        else:
+            return round_en_cours
 
     def cloturer_round(self, round_actuel, resultats):
         """Clôture un round en enregistrant les résultats des matchs.
